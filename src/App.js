@@ -1,25 +1,24 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+/*--- import containers ---*/
+import Navbar from './containers/Navbar';
+import Home from './containers/Home';
+import NewsDetail from './containers/NewsDetail';
+
+/*--- fixed navbar, body has 2 routes ---*/
+const App = () => (
+  <>
+    <Router>
+      <div>
+      <Navbar />
+        {/* <Switch>
+          <Route exact path='/' component={Home} />
+          <Route exact path={'/detail/:id'} component={NewsDetail} />
+        </Switch> */}
+      </div>
+    </Router>
+  </>
+)
 
 export default App;

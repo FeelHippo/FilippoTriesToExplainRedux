@@ -1,70 +1,66 @@
-# Getting Started with Create React App
+## MASTER BRANCH: basic React App WITHOUT Redux
+### first of all, create a new react app:
+```console
+    npx create-react-app my-app
+    cd my-app
+    npm start
+```
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### install basic dependencies:
 
-## Available Scripts
+- node-sass
+- react-router-dom
+- axios
 
-In the project directory, you can run:
+### views are implemented using the container/presentational component pattern
+[Detailed explanation](https://scotch.io/courses/5-essential-react-concepts-to-know-before-learning-redux/presentational-and-container-component-pattern-in-react)
 
-### `npm start`
+... so, App.js will determine which CONTAINER is called, depending on the routing.
+- Navbar is fixed, so it is placed outside of <Router></Router>
+- path '/' will call Home container, path={'/detail/:id'} the NewsDetail container
+- these last two containers are not implemented yet, so they are commented out to avoid runtime errors
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### How Navbar works
+#### the 'entry point' is ./src/containers/Navbar.js, which is a CLASS component.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+note how the state is defined inside of the constructor, and hence its SCOPE is imited to Navbar.js
 
-### `npm test`
+updateSearchField and fetchUserNews are two methods (functions), the first is in charge of updating the internal state as the user types text inside a text field
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+fetchUserNews is fired when the user clicks on a button, and calls the API
 
-### `npm run build`
+take a look at the render() function: the return value is another component, called NavbarView, and we assign to it three props
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+#### the presentational component is ./src/components/Navbar/navbar.jsx
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+this is a simple functional component, note how the props are destructured, and the parenthesis
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+when text is typed into the input field, onChange={ updateUserValue } will update the state of the container
 
-### `npm run eject`
+when the button is clicked, onClick={ fetchUserNews } will call the api function
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### .src/services/api.js
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+NOTE: this service is a function that returns an object
+const api = () => { return {} } is an arrow function that returns an object
+the returned object exposes methods for api petitions, for instance:
+{
+    ...
+    fetchUserNews: async (values) => await axios.get(values)
+    ...
+} 
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+so, when I do api(), the function fires and the object with all the methods is returned as a result
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+#### this is exactly what happens in Navbar.js lines 5 and 6
+- import api module
+- destructure the methods by firing the functions
 
-## Learn More
+## MOST IMPORTANT ASPECT OF THIS INITIAL PROJECT:
+open the console in the devTools
+try to insert a text inside the text field, and click on 'Search'
+as you can see, the API returns the search results as expected
+BUT, these results are now stuck inside the Navbar.js container
+it would be difficult and certainly not fun to share those results with other components
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+ENTER REDUX
